@@ -1,0 +1,18 @@
+header {
+    background-image: linear-gradient(to right, #003e8e, #0044a3, #004ab8, #0050ce, #1455e3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0px;
+    color: white;
+    gap: 10px;
+}
+
+header > img  {
+    width: 45px;
+}
+
+header > span {
+    font-size: 30px;
+    font-weight: 800;
+}
