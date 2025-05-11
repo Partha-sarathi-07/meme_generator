@@ -1,22 +1,34 @@
-import { useState } from "react"
+import React from "react"
 import '../styles/main.css'
 import frame from '../assets/frame.png';
+import type { Meme, MemeApiResponse } from "../interfaces/meme.interface";
 
 export default function Main() {
-    const [meme, setMeme] = useState({
+
+    const [memeArray, setMemeArray] = React.useState<MemeApiResponse[]>()
+    const [meme, setMeme] = React.useState<Meme>({
         topText : "One does not simply",
         bottomText: "Walk into mordor",
         imageUrl : "http://i.imgflip.com/1bij.jpg"
     })
 
-    function generatMeme(formData: FormData) {
-        setMeme(() => {
-            return {
-                topText: formData.get("topText")?.toString()!,
-                bottomText: formData.get("bottomText")?.toString()!,
-                imageUrl: "http://i.imgflip.com/1bij.jpg"
-            }
-        })
+
+    React.useEffect(() => {
+        fetch("https://api.imgflip.com/get_memes")
+            .then(res => res.json())
+            .then(res => {
+                setMemeArray(res.data.memes);
+            })
+    }, [])
+
+
+    function generateMeme(formData: FormData) {
+        const newImageUrl = memeArray![Math.floor(Math.random() * memeArray?.length!)].url;
+        setMeme((): Meme => ({
+            topText : formData.get("topText")?.toString()!,
+            bottomText : formData.get("bottomText")?.toString()!,
+            imageUrl: newImageUrl
+        }))
     }
 
     function handleChange(event) {
@@ -27,9 +39,10 @@ export default function Main() {
         }))
     }
 
+    console.log("rendered");
     return (
         <main>
-            <form action={generatMeme}>
+            <form action={generateMeme}>
                 <div id="user-text">
                     <label>
                         <span>Top Text</span>
